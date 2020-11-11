@@ -8,18 +8,15 @@ repositories {
     mavenCentral()
 
     exclusiveContent {
-        forRepositories(['maven-releases', 'maven-snapshots'].collect { repo ->
+        forRepository {
             maven {
                 credentials {
                     username configProperty("NEXUS_USERNAME", "nexusUsername")
                     password configProperty("NEXUS_PASSWORD", "nexusPassword")
                 }
-                url = "$nexusContextUrl/$repo"
-                mavenContent {
-                    repo == 'maven-snapshots' ? snapshotsOnly() : releasesOnly()
-                }
+                url = "$nexusContextUrl/maven-internal"
             }
-        } as ArtifactRepository[])
+        }
 
         filter {
             includeGroupByRegex "com\\.(polixis|ardis).*"
