@@ -1,0 +1,36 @@
+/**
+ * Configures the internal Nexus repository as a artifact repository.
+ */
+
+def nexusContextUrl = configProperty("NEXUS_CONTEXT_URL", 'nexusContextUrl')
+
+repositories {
+    mavenCentral()
+
+    exclusiveContent {
+        forRepositories(['maven-releases', 'maven-snapshots'].collect { repo ->
+            maven {
+                credentials {
+                    username configProperty("NEXUS_USERNAME", "nexusUsername")
+                    password configProperty("NEXUS_PASSWORD", "nexusPassword")
+                }
+                url = "$nexusContextUrl/$repo"
+                mavenContent {
+                    repo == 'maven-snapshots' ? snapshotsOnly() : releasesOnly()
+                }
+            }
+        } as ArtifactRepository[])
+
+        filter {
+            includeGroupByRegex "com\\.(polixis|ardis).*"
+        }
+    }
+}
+
+String configProperty(String envVar, String sysProp) {
+    System.getenv(envVar) ?: project.findProperty(sysProp)
+}
+
+String configProperty(String envVar) {
+    configProperty(envVar, envVar.replace('_', '.').toLowerCase())
+}

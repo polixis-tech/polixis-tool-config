@@ -1,0 +1,56 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+ext {
+    isCI = Boolean.parseBoolean System.getenv('CI')
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events 'skipped', 'failed'
+        exceptionFormat 'full'
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        xml.destination file("${buildDir}/reports/jacoco/report.xml")
+        html.enabled !project.ext.isCI
+        html.destination file("${buildDir}/reports/jacoco/html")
+    }
+
+    dependsOn test
+}
+
+jacoco {
+    toolVersion "0.8.6"
+}
+
+tasks.withType(Test) {
+    jvmArgs += '--enable-preview'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += '--enable-preview'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Built-By': System.properties['user.name'],
+                'Build-Timestamp': LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
+                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS': "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+                'Created-By': "Gradle ${gradle.gradleVersion}",
+        )
+    }
+}
+
+clean {
+    delete "out"
+}
