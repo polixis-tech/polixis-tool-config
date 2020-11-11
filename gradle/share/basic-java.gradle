@@ -1,8 +1,16 @@
+/**
+ * Configures most basic Java project.
+ * 
+ * Requires following plugins:
+ *  - java
+ *  - jacoco (Optional)
+ */
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 ext {
     isCI = Boolean.parseBoolean System.getenv('CI')
+    isJacocoPluginApplied = project.pluginManager.hasPlugin('jacoco')
 }
 
 test {
@@ -12,22 +20,27 @@ test {
         events 'skipped', 'failed'
         exceptionFormat 'full'
     }
-    finalizedBy jacocoTestReport
+
+    if (project.ext.isJacocoPluginApplied) {
+        finalizedBy jacocoTestReport
+    }
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        xml.destination file("${buildDir}/reports/jacoco/report.xml")
-        html.enabled !project.ext.isCI
-        html.destination file("${buildDir}/reports/jacoco/html")
+if (ext.isJacocoPluginApplied) {
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            xml.destination file("${buildDir}/reports/jacoco/report.xml")
+            html.enabled !project.ext.isCI
+            html.destination file("${buildDir}/reports/jacoco/html")
+        }
+
+        dependsOn test
     }
 
-    dependsOn test
-}
-
-jacoco {
-    toolVersion "0.8.6"
+    jacoco {
+        toolVersion "0.8.6"
+    }
 }
 
 tasks.withType(Test) {

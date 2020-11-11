@@ -1,0 +1,82 @@
+/**
+ * Configures the release management for typical Java library.
+ *
+ * Requires following plugins:
+ *  - maven-publish
+ *  - net.researchgate.release (Optional)
+ *
+ * Requires following properties or environment variables to be present:
+ *  - NEXUS_USERNAME or nexusUsername
+ *  - NEXUS_PASSWORD or nexusPassword
+ *  - NEXUS_CONTEXT_URL or nexusContextUrl
+ */
+
+ext {
+    isReleasePluginApplied = project.pluginManager.hasPlugin('net.researchgate.release')
+    isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = "sources"
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = "javadoc"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.name
+            from components.java
+            artifact sourcesJar
+            if (!isSnapshotVersion) {
+                artifact javadocJar
+            }
+        }
+    }
+
+    repositories {
+        def nexusUsername = configProperty("NEXUS_USERNAME", "nexusUsername")
+        def nexusPassword = configProperty("NEXUS_PASSWORD", "nexusPassword")
+        def nexusContextUrl = configProperty("NEXUS_CONTEXT_URL", 'nexusContextUrl')
+
+        maven {
+            name = "nexusMavenSnapshots"
+            credentials {
+                username nexusUsername
+                password nexusPassword
+            }
+            url = "$nexusContextUrl/maven-snapshots"
+        }
+
+        maven {
+            name = "nexusMavenReleases"
+            credentials {
+                username nexusUsername
+                password nexusPassword
+            }
+            url = "$nexusContextUrl/maven-releases"
+        }
+    }
+}
+
+if (ext.isReleasePluginApplied) {
+    release {
+        tagTemplate = 'v${version}'
+        preTagCommitMessage = 'Release: '
+        newVersionCommitMessage = 'Version bump commit: '
+
+        git {
+            requireBranch = 'release'
+            pushToRemote = 'origin'
+        }
+    }
+
+    // Automatically upload artifacts after `./gradlew release`
+    afterReleaseBuild.dependsOn ext.isSnapshotVersion
+            ? publishAllPublicationsToNexusMavenSnapshotsRepository
+            : publishAllPublicationsToNexusMavenReleasesRepository
+}
