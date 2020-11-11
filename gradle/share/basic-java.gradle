@@ -1,6 +1,6 @@
 /**
  * Configures most basic Java project.
- * 
+ *
  * Requires following plugins:
  *  - java
  *  - jacoco (Optional)
@@ -19,6 +19,17 @@ test {
     testLogging {
         events 'skipped', 'failed'
         exceptionFormat 'full'
+    }
+
+    String testType = System.properties['test.type']
+    if (testType == 'integration') {
+        include '**/*IntegrationTest.*'
+        include '**/*IntegrationSpec.*'
+    } else if (testType == 'unit') {
+        include '**/*Test.*'
+        include '**/*Spec.*'
+        exclude '**/*IntegrationTest.*'
+        exclude '**/*IntegrationSpec.*'
     }
 
     if (project.ext.isJacocoPluginApplied) {
