@@ -1,0 +1,33 @@
+/**
+ * Configures code quality tools.
+ *
+ * Can configure following plugins:
+ *
+ *  - org.sonarqube (optional)
+ *  - checkstyle (optional)
+ */
+ext {
+    isSonarPluginApplied = project.pluginManager.hasPlugin('org.sonarqube')
+    isCheckstylePluginApplied = project.pluginManager.hasPlugin('checkstyle')
+
+    checkstyleToolVersion = ext.find('checkstyleToolVersion') ?: '8.37'
+    checkstyleConfigResource = ext.find('checkstyleConfigResource') ?: project.resources
+            .text
+            .fromUri('https://raw.githubusercontent.com/polixis-tech/polixis-tool-config/master/checkstyle/8.37/checkstyle.xml')
+}
+
+if (project.ext.isSonarPluginApplied) {
+    sonarqube {
+        properties {
+            property "sonar.organization", "polixis-tech"
+            property "sonar.host.url", "https://sonarcloud.io"
+        }
+    }
+}
+
+if (project.ext.isCheckstylePluginApplied) {
+    checkstyle {
+        toolVersion project.ext.checkstyleToolVersion
+        configFile  project.ext.checkstyleConfigResource.asFile()
+    }
+}
