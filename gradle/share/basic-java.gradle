@@ -55,12 +55,16 @@ if (ext.isJacocoPluginApplied) {
 }
 
 tasks.withType(Test) {
-    jvmArgs += '--enable-preview'
+    if (JavaVersion.toVersion(sourceCompatibility).isCompatibleWith(JavaVersion.VERSION_15)) {
+        jvmArgs += '--enable-preview'
+    }
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-    options.compilerArgs += '--enable-preview'
+    if (JavaVersion.toVersion(sourceCompatibility).isCompatibleWith(JavaVersion.VERSION_15)) {
+        options.compilerArgs += '--enable-preview'
+    }
 }
 
 javadoc {
