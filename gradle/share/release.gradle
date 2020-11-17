@@ -16,12 +16,20 @@ ext {
     isJavaPluginApplied = project.pluginManager.hasPlugin('java')
     isJavaPlatformPluginApplied = project.pluginManager.hasPlugin('java-platform')
     isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
+    shouldPublishTests = ext.find('shouldPublishTests') ?: false
 }
 
 if (project.ext.isJavaPluginApplied) {
     task sourcesJar(type: Jar) {
         from sourceSets.main.allJava
         archiveClassifier = "sources"
+    }
+
+    if (project.ext.shouldPublishTests) {
+        task testsJar(type: Jar) {
+            from sourceSets.test.output.classesDirs
+            archiveClassifier = "tests"
+        }
     }
 
     task javadocJar(type: Jar) {
@@ -40,6 +48,10 @@ publishing {
                 artifact sourcesJar
                 if (!project.ext.isSnapshotVersion) {
                     artifact javadocJar
+                }
+
+                if (project.ext.shouldPublishTests) {
+                    artifact testsJar
                 }
             }
         }
