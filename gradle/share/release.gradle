@@ -18,7 +18,7 @@ ext {
     isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
     shouldPublishTests = ext.find('shouldPublishTests') ?: false
     shouldPublishTestSources = ext.find('shouldPublishTestSources') ?: false
-    uploadAfterRelease = ext.find('uploadAfterRelease') ?: true
+    uploadAfterRelease = ext.has('uploadAfterRelease') ? ext.get('uploadAfterRelease') : false
 }
 
 if (project.ext.isJavaPluginApplied) {
@@ -107,7 +107,8 @@ if (ext.isReleasePluginApplied) {
         }
     }
 
-    if (ext.uploadAfterRelease) {
+    if (project.ext.uploadAfterRelease) {
+        logger.lifecycle("Appying to: {}", project.name)
         // Automatically upload artifacts after `./gradlew release`
         afterReleaseBuild.dependsOn ext.isSnapshotVersion
                 ? publishAllPublicationsToNexusMavenSnapshotsRepository
