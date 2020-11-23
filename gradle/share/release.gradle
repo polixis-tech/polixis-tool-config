@@ -108,7 +108,6 @@ if (ext.isReleasePluginApplied) {
     }
 
     if (project.ext.uploadAfterRelease) {
-        logger.lifecycle("Appying to: {}", project.name)
         // Automatically upload artifacts after `./gradlew release`
         afterReleaseBuild.dependsOn ext.isSnapshotVersion
                 ? publishAllPublicationsToNexusMavenSnapshotsRepository
