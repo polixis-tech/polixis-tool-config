@@ -20,6 +20,8 @@ ext {
     shouldPublishTestSources = ext.find('shouldPublishTestSources') ?: false
 }
 
+project.ext['release.uploadAfterRelease'] = project.ext.find('release.uploadAfterRelease') ?: true
+
 if (project.ext.isJavaPluginApplied) {
     task sourcesJar(type: Jar) {
         from sourceSets.main.allJava
@@ -106,8 +108,10 @@ if (ext.isReleasePluginApplied) {
         }
     }
 
-    // Automatically upload artifacts after `./gradlew release`
-    afterReleaseBuild.dependsOn ext.isSnapshotVersion
-            ? publishAllPublicationsToNexusMavenSnapshotsRepository
-            : publishAllPublicationsToNexusMavenReleasesRepository
+    if (ext['release.uploadAfterRelease']) {
+        // Automatically upload artifacts after `./gradlew release`
+        afterReleaseBuild.dependsOn ext.isSnapshotVersion
+                ? publishAllPublicationsToNexusMavenSnapshotsRepository
+                : publishAllPublicationsToNexusMavenReleasesRepository
+    }
 }
