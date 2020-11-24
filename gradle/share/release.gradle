@@ -18,7 +18,7 @@ ext {
     isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
     shouldPublishTests = ext.find('shouldPublishTests') ?: false
     shouldPublishTestSources = ext.find('shouldPublishTestSources') ?: false
-    uploadAfterRelease = ext.has('uploadAfterRelease') ? ext.get('uploadAfterRelease') : false
+    uploadAfterRelease = ext.has('uploadAfterRelease') ? ext.get('uploadAfterRelease') : true
 }
 
 if (project.ext.isJavaPluginApplied) {
