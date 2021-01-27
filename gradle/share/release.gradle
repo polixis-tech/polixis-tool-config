@@ -120,7 +120,3 @@ if (ext.isReleasePluginApplied) {
                 : publishAllPublicationsToNexusMavenReleasesRepository
     }
 }
-
-if (project.ext.shouldPublishShadow && project.ext.isShadowPluginApplied) {
-    shadowJar.archiveClassifier = ''
-}
