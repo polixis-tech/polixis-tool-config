@@ -15,7 +15,9 @@ ext {
     isReleasePluginApplied = project.pluginManager.hasPlugin('net.researchgate.release')
     isJavaPluginApplied = project.pluginManager.hasPlugin('java')
     isJavaPlatformPluginApplied = project.pluginManager.hasPlugin('java-platform')
+    isShadowPluginApplied = project.pluginManager.hasPlugin('com.github.johnrengelman.shadow')
     isSnapshotVersion = project.version.endsWith('-SNAPSHOT')
+    shouldPublishShadow = ext.find('shouldPublishShadow') ?: false
     shouldPublishTests = ext.find('shouldPublishTests') ?: false
     shouldPublishTestSources = ext.find('shouldPublishTestSources') ?: false
     uploadAfterRelease = ext.has('uploadAfterRelease') ? ext.get('uploadAfterRelease') : true
@@ -51,7 +53,11 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = project.name
-            from project.ext.isJavaPlatformPluginApplied ? components.javaPlatform : components.java
+            if (project.ext.shouldPublishShadow && project.ext.isShadowPluginApplied) {
+                project.shadow.component(publication)
+            } else {
+                from project.ext.isJavaPlatformPluginApplied ? components.javaPlatform : components.java
+            }
 
             if (project.ext.isJavaPluginApplied) {
                 artifact sourcesJar
