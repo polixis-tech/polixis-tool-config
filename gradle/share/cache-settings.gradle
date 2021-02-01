@@ -1,0 +1,30 @@
+/**
+ * Configures Gradle Build Cache using remote HTTP build cache node. This script should be included in 'settings.gradle'.
+ *
+ *
+ * Requires following properties or environment variables to be present:
+ *  - REMOTE_BUILD_CACHE_ENABLED the master switch to enable or disable cache settings. Default is true.
+ *  - CI the indicator whether running on continuous integration server or not. If true cache "push" mode will be activated.
+ *  - ORG_GRADLE_PROJECT_buildCacheUrl or buildCacheUrl
+ *  - ORG_GRADLE_PROJECT_buildCacheUsername or buildCacheUsername
+ *  - ORG_GRADLE_PROJECT_buildCachePassword or buildCachePassword
+ */
+boolean isCI = Boolean.parseBoolean System.getenv().get("CI")
+boolean isRemoteBuildCacheEnabled = Boolean.parseBoolean(System.getenv().get("REMOTE_BUILD_CACHE_ENABLED") ?: "true")
+
+if (isRemoteBuildCacheEnabled) {
+    buildCache {
+        local {
+            enabled = !isCI
+        }
+
+        remote(HttpBuildCache) {
+            url = "$buildCacheUrl"
+            credentials {
+                username = "$buildCacheUsername"
+                password = "$buildCachePassword"
+                push = isCI
+            }
+        }
+    }
+}
