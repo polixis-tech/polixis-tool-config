@@ -5,6 +5,7 @@
 def nexusContextUrl = configProperty("NEXUS_CONTEXT_URL", 'nexusContextUrl')
 
 repositories {
+    mavenLocal()
     mavenCentral()
 
     exclusiveContent {
