@@ -106,7 +106,6 @@ if (ext.isReleasePluginApplied) {
         tagTemplate = 'v${version}'
         preTagCommitMessage = 'Release: '
         newVersionCommitMessage = 'Version bump commit: '
-
         git {
             requireBranch.set('release')
             pushToRemote.set('origin')
