@@ -109,7 +109,7 @@ if (ext.isReleasePluginApplied) {
 
         git {
             requireBranch.set('release')
-            pushToRemote = 'origin'
+            pushToRemote.set('origin')
         }
     }
 
