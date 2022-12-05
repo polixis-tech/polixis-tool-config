@@ -108,7 +108,7 @@ if (ext.isReleasePluginApplied) {
         newVersionCommitMessage = 'Version bump commit: '
 
         git {
-            requireBranch = 'release'
+            requireBranch.set('release')
             pushToRemote = 'origin'
         }
     }
