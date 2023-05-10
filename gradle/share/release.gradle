@@ -37,57 +37,40 @@ if (project.ext.isJavaPluginApplied) {
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = project.name
-            if (project.ext.shouldPublishShadow && project.ext.isShadowPluginApplied) {
-                project.shadow.component(publication)
-            } else {
-                from project.ext.isJavaPlatformPluginApplied ? components.javaPlatform : components.java
-            }
-
-            if (project.ext.isJavaPluginApplied) {
-                artifact sourcesJar
-                if (!project.ext.isSnapshotVersion) {
-                    artifact javadocJar
-                }
-                if (project.ext.shouldPublishTests) {
-                    artifact testsJar
-                }
-                if (project.ext.shouldPublishTestSources) {
-                    artifact testSourcesJar
-                }
-            }
-        }
-    }
-
     repositories {
-        var repo
-        if (isSnapshotVersion){
-            repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
-        }else {
-            repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
-        }
         maven {
-            url repo
+            name = "artifact-registry-release"
+            url = version.endsWith('SNAPSHOT')
+                    ? "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
+                    : "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
         }
     }
 }
 
-if (ext.isReleasePluginApplied) {
-    release {
-        tagTemplate = 'v${version}'
-        preTagCommitMessage = 'Release: '
-        newVersionCommitMessage = 'Version bump commit: '
-
-        git {
-            requireBranch = 'release'
-            pushToRemote = 'origin'
-        }
+repositories {
+    maven {
+        name = "release"
+        url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
     }
-
-    if (project.ext.uploadAfterRelease) {
-        // Automatically upload artifacts after `./gradlew release`
-        afterReleaseBuild.dependsOn publish
+    maven {
+        name = "snapshot"
+        url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
     }
 }
+//if (ext.isReleasePluginApplied) {
+//    publish {
+//        tagTemplate = 'v${version}'
+//        preTagCommitMessage = 'Release: '
+//        newVersionCommitMessage = 'Version bump commit: '
+//
+//        git {
+//            requireBranch = 'release'
+//            pushToRemote = 'origin'
+//        }
+//    }
+//
+//    if (project.ext.uploadAfterRelease) {
+//        // Automatically upload artifacts after `./gradlew release`
+//        afterReleaseBuild.dependsOn publish
+//    }
+//}
