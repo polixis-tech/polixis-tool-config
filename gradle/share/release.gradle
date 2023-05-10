@@ -1,5 +1,5 @@
 ext {
-    isReleasePluginApplied = project.pluginManager.hasPlugin('net.researchgate.release')
+    isReleasePluginApplied = project.pluginManager.hasPlugin('com.google.cloud.artifactregistry.gradle-plugin')
     isJavaPluginApplied = project.pluginManager.hasPlugin('java')
     isJavaPlatformPluginApplied = project.pluginManager.hasPlugin('java-platform')
     isShadowPluginApplied = project.pluginManager.hasPlugin('com.github.johnrengelman.shadow')
@@ -51,11 +51,9 @@ publishing {
                 if (!project.ext.isSnapshotVersion) {
                     artifact javadocJar
                 }
-
                 if (project.ext.shouldPublishTests) {
                     artifact testsJar
                 }
-
                 if (project.ext.shouldPublishTestSources) {
                     artifact testSourcesJar
                 }
@@ -64,8 +62,14 @@ publishing {
     }
 
     repositories {
+        repo
+        if (isSnapshotVersion){
+            repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+        }else {
+            repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
+        }
         maven {
-            url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-intenal"
+            url repo
         }
     }
 }

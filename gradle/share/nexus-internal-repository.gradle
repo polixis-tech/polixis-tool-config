@@ -7,8 +7,14 @@ repositories {
 
     exclusiveContent {
         forRepository {
+            repo
+            if (isSnapshotVersion){
+                repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+            }else {
+                repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
+            }
             maven {
-                url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-intenal"
+                url repo
             }
         }
 
