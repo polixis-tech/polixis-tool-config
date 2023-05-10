@@ -1,9 +1,6 @@
 /**
  * Configures the internal Nexus repository as a artifact repository.
  */
-
-def nexusContextUrl = configProperty("NEXUS_CONTEXT_URL", 'nexusContextUrl')
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -11,11 +8,7 @@ repositories {
     exclusiveContent {
         forRepository {
             maven {
-                credentials {
-                    username configProperty("NEXUS_USERNAME", "nexusUsername")
-                    password configProperty("NEXUS_PASSWORD", "nexusPassword")
-                }
-                url = "$nexusContextUrl/maven-internal"
+                url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-intenal"
             }
         }
 

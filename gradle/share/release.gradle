@@ -1,16 +1,3 @@
-/**
- * Configures the release management for typical Java library.
- *
- * Requires following plugins:
- *  - maven-publish
- *  - net.researchgate.release (Optional)
- *
- * Requires following properties or environment variables to be present:
- *  - NEXUS_USERNAME or nexusUsername
- *  - NEXUS_PASSWORD or nexusPassword
- *  - NEXUS_CONTEXT_URL or nexusContextUrl
- */
-
 ext {
     isReleasePluginApplied = project.pluginManager.hasPlugin('net.researchgate.release')
     isJavaPluginApplied = project.pluginManager.hasPlugin('java')
@@ -77,26 +64,8 @@ publishing {
     }
 
     repositories {
-        def nexusUsername = configProperty("NEXUS_USERNAME", "nexusUsername")
-        def nexusPassword = configProperty("NEXUS_PASSWORD", "nexusPassword")
-        def nexusContextUrl = configProperty("NEXUS_CONTEXT_URL", 'nexusContextUrl')
-
         maven {
-            name = "nexusMavenSnapshots"
-            credentials {
-                username nexusUsername
-                password nexusPassword
-            }
-            url = "$nexusContextUrl/maven-snapshots"
-        }
-
-        maven {
-            name = "nexusMavenReleases"
-            credentials {
-                username nexusUsername
-                password nexusPassword
-            }
-            url = "$nexusContextUrl/maven-releases"
+            url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-intenal"
         }
     }
 }
