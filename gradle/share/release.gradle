@@ -62,7 +62,7 @@ publishing {
     }
 
     repositories {
-        repo
+        var repo
         if (isSnapshotVersion){
             repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
         }else {
