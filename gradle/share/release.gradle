@@ -37,23 +37,37 @@ if (project.ext.isJavaPluginApplied) {
 }
 
 publishing {
-    repositories {
-        maven {
-            name = "artifact-registry-release"
-            url = version.endsWith('SNAPSHOT')
-                    ? "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-internal"
-                    : "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = project.name
+            if (project.ext.shouldPublishShadow && project.ext.isShadowPluginApplied) {
+                project.shadow.component(publication)
+            } else {
+                from project.ext.isJavaPlatformPluginApplied ? components.javaPlatform : components.java
+            }
+
+            if (project.ext.isJavaPluginApplied) {
+                artifact sourcesJar
+                if (!project.ext.isSnapshotVersion) {
+                    artifact javadocJar
+                }
+
+                if (project.ext.shouldPublishTests) {
+                    artifact testsJar
+                }
+
+                if (project.ext.shouldPublishTestSources) {
+                    artifact testSourcesJar
+                }
+            }
         }
     }
-}
 
 repositories {
     maven {
-        name = "release"
-        url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-internal"
-    }
-    maven {
-        name = "snapshot"
-        url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+        def snapshotUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+        def internalUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-internal"
+
+        url = version.endsWith('SNAPSHOT') ? snapshotUrl : internalUrl
     }
 }
