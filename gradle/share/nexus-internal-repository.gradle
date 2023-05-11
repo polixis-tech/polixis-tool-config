@@ -11,10 +11,6 @@ repositories {
             def internalUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-internal"
             url = version.endsWith('SNAPSHOT') ? snapshotUrl : internalUrl
         }
-  
-    filter {
-        includeGroupByRegex "com\\.(polixis|ardis).*"
-    }
 }
 
 String configProperty(String envVar, String sysProp) {
