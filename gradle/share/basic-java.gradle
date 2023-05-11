@@ -40,7 +40,6 @@ test {
 if (ext.isJacocoPluginApplied) {
     jacocoTestReport {
         reports {
-            xml.enabled true
             xml.destination file("${buildDir}/reports/jacoco/report.xml")
             html.enabled !project.ext.isCI
             html.destination file("${buildDir}/reports/jacoco/html")
