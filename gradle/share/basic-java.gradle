@@ -43,7 +43,6 @@ if (ext.isJacocoPluginApplied) {
             xml.destination file("${buildDir}/reports/jacoco/report.xml")
             html.destination file("${buildDir}/reports/jacoco/html")
         }
-
         dependsOn test
     }
 
