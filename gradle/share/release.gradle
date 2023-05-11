@@ -57,19 +57,3 @@ repositories {
         url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
     }
 }
-//if (ext.isReleasePluginApplied) {
-////    publish {
-////        tagTemplate = 'v${version}'
-////        preTagCommitMessage = 'Release: '
-////        newVersionCommitMessage = 'Version bump commit: '
-////
-////        git {
-////            requireBranch = 'release'
-////            pushToRemote = 'origin'
-////        }
-////    }
-//    if (project.ext.uploadAfterRelease) {
-//        // Automatically upload artifacts after `./gradlew release`
-//        afterReleaseBuild.dependsOn publish
-//    }
-//}
