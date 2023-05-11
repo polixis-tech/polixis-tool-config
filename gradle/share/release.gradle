@@ -60,16 +60,15 @@ publishing {
                     artifact testSourcesJar
                 }
             }
-
         }
     }
-}
 
-repositories {
-    maven {
-        def snapshotUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
-        def internalUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-internal"
+    repositories {
+        maven {
+            def snapshotUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+            def internalUrl = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-internal"
 
-        url = version.endsWith('SNAPSHOT') ? snapshotUrl : internalUrl
+            url = version.endsWith('SNAPSHOT') ? snapshotUrl : internalUrl
+        }
     }
 }
