@@ -5,22 +5,16 @@ repositories {
     mavenLocal()
     mavenCentral()
 
-    exclusiveContent {
-        forRepository {
-            repo
-            if (isSnapshotVersion){
-                repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
-            }else {
-                repo = "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
-            }
-            maven {
-                url repo
-            }
-        }
-
-        filter {
-            includeGroupByRegex "com\\.(polixis|ardis).*"
-        }
+    maven {
+        name = "release"
+        url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-release"
+    }
+    maven {
+        name = "snapshot"
+        url "artifactregistry://europe-west6-maven.pkg.dev/hybrid-chess-313408/maven-snapshot"
+    }
+    filter {
+        includeGroupByRegex "com\\.(polixis|ardis).*"
     }
 }
 
