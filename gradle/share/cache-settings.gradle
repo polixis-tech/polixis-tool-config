@@ -10,7 +10,7 @@
  *  - ORG_GRADLE_PROJECT_buildCachePassword or buildCachePassword
  */
 boolean isCI = Boolean.parseBoolean System.getenv().get("CI")
-boolean isRemoteBuildCacheEnabled = Boolean.parseBoolean(System.getenv().get("REMOTE_BUILD_CACHE_ENABLED") ?: "true")
+boolean isRemoteBuildCacheEnabled = Boolean.parseBoolean(System.getenv().get("REMOTE_BUILD_CACHE_ENABLED") ?: "false")
 
 if (isRemoteBuildCacheEnabled) {
     buildCache {
